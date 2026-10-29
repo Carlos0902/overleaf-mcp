@@ -4,6 +4,15 @@ All notable changes to `overleaf-mcp-rt`. The format follows [Keep a Changelog](
 
 ## [Unreleased]
 
+### Fixed
+
+- Compile, log and PDF tools now use the project's selected main document instead of forcing `main.tex`. Projects whose root has another name or lives in a subfolder compile using Overleaf's own root-document resolution, including its history-backed selection.
+
+### Testing
+
+- Update the newest CE live-test target from 6.3.0 to 6.3.2. The compile scenario now renames and moves the main document before compiling, for both classic OT and history-OT projects.
+- Verified on 2026-10-29: 315 local tests, 10 production overleaf.com scenarios on a classic-OT scratch project, and 21 CE 6.3.2 scenarios across both protocols passed. Migrated history-OT writes on overleaf.com remain unverified and opt-in; see `docs/compatibility-2026-10-29.md`.
+
 ## [2.2.0] — 2026-09-20
 
 Projects that Overleaf has moved to its newer document format (history-OT) no longer fail to open: they can be read, and edited if you opt in. Nothing changes for classic projects — which today is every project most people have.

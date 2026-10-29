@@ -95,7 +95,9 @@ export class OverleafRest {
         check: 'silent',
         draft: opts.draft ?? false,
         incrementalCompilesEnabled: true,
-        rootResourcePath: opts.rootResourcePath ?? 'main.tex',
+        // Omitting this lets Overleaf resolve the project's selected root doc,
+        // including history-backed projects. Templates need not use main.tex.
+        ...(opts.rootResourcePath === undefined ? {} : { rootResourcePath: opts.rootResourcePath }),
         stopOnFirstError: opts.stopOnFirstError ?? false,
       },
     )

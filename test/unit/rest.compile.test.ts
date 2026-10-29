@@ -54,6 +54,33 @@ describe('OverleafRest.compile', () => {
     )
     await makeRest().compile('p1', { draft: true, stopOnFirstError: true })
   })
+
+  it('lets Overleaf select the configured main document instead of assuming main.tex', async () => {
+    server.use(
+      http.post('https://o.example/project/p1/compile', async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>
+        // CompileManager resolves rootDoc_id (and migrated history metadata) when
+        // rootResourcePath is absent. Forcing main.tex bypasses that selection.
+        return HttpResponse.json({
+          status: 'success',
+          outputFiles: [{ path: String(body.rootResourcePath ?? 'chapters/thesis.tex'), url: '/pdf', type: 'pdf' }],
+        })
+      }),
+    )
+    const result = await makeRest().compile('p1')
+    expect(result.outputFiles[0]!.path).toBe('chapters/thesis.tex')
+  })
+
+  it('preserves an explicitly requested root document', async () => {
+    server.use(
+      http.post('https://o.example/project/p1/compile', async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>
+        expect(body.rootResourcePath).toBe('appendix.tex')
+        return HttpResponse.json({ status: 'success', outputFiles: [] })
+      }),
+    )
+    await makeRest().compile('p1', { rootResourcePath: 'appendix.tex' })
+  })
 })
 
 describe('OverleafRest.compile when the project was compiled less than a second ago', () => {

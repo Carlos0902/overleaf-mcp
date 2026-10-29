@@ -4,7 +4,7 @@
 # network, and remove every trace of it.
 #
 #   test/live/run-matrix.sh                 # every version in versions.conf
-#   test/live/run-matrix.sh 6.3.0 5.5.8     # just these
+#   test/live/run-matrix.sh 6.3.2 5.5.8     # just these
 #   KEEP_IMAGES=1 test/live/run-matrix.sh   # don't remove the images this run pulled
 #
 # Run it on the Docker host (it bind-mounts the checkout read-only). Guarantees:

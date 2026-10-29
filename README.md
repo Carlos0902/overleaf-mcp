@@ -65,6 +65,8 @@ npx overleaf-mcp-rt@latest --help
 
 Nothing is installed on, or changed in, the Overleaf server: the MCP server is just another logged-in client. Live co-editing was verified against Community Edition 6.0.0 and against production overleaf.com with a person typing in the browser throughout — both sides ended byte-identical — and the [live test suite](test/live/README.md) runs the server against throw-away instances of CE 4.2, 5.5, 6.0 and 6.3.
 
+The [2026-10-29 compatibility check](docs/compatibility-2026-10-29.md) passed the production overleaf.com suite on a classic-OT scratch project and the CE 6.3.2 suite on both classic and history-OT projects. Migrated history-OT writes on overleaf.com remain unverified and opt-in.
+
 ## Why "real-time"? Native OT vs git-bridge
 
 |  | **Overleaf MCP** (native OT) | git-bridge–style MCP servers |
@@ -284,6 +286,8 @@ Review-panel comment threads, for feedback that belongs *next to* a passage rath
 | `overleaf_compile(projectId, draft?, stopOnFirstError?)` | Trigger a LaTeX compile, return output URLs. |
 | `overleaf_read_compile_log(projectId)` | Compile and return `output.log` text. |
 | `overleaf_download_pdf(projectId)` | Compile and return the PDF as an MCP resource (`application/pdf`, base64 blob). |
+
+All three tools compile the main document selected in Overleaf's project settings. Its filename can differ from `main.tex`, and it can live in a subfolder; the server resolves that selection, including for history-backed projects.
 
 ### Error envelope
 

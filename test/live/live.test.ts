@@ -328,6 +328,12 @@ describe.skipIf(!liveEnabled || process.env.LIVE_PHASE === 'bootstrap').each(kin
       const minimal = '\\documentclass{article}\n\\begin{document}\nlive suite\n\\end{document}\n'
       const w = await agent.call('overleaf_write_doc', { projectId, path: 'main.tex', content: minimal, overwrite: true })
       expect(w.ok, w.text).toBe(true)
+      // Keep the root document's id, but give it a non-default name and parent.
+      // Compile must follow Overleaf's saved root selection, not force main.tex.
+      const renamed = await agent.call('overleaf_rename', { projectId, path: 'main.tex', newName: 'paper.tex' })
+      expect(renamed.ok, renamed.text).toBe(true)
+      const moved = await agent.call('overleaf_move', { projectId, path: 'paper.tex', newParentPath: dir })
+      expect(moved.ok, moved.text).toBe(true)
     }
     const compiled = await agent.call('overleaf_compile', { projectId })
     expect(compiled.ok, compiled.text).toBe(true)
@@ -335,6 +341,7 @@ describe.skipIf(!liveEnabled || process.env.LIVE_PHASE === 'bootstrap').each(kin
     const log = await agent.call('overleaf_read_compile_log', { projectId })
     expect(log.ok, log.text).toBe(true)
     expect(log.json.log).toMatch(/This is \w*TeX/)
+    if (isBootstrap) expect(log.json.log).toContain('paper.tex')
     if (compiled.json.status === 'success') {
       const pdf = await agent.call('overleaf_download_pdf', { projectId })
       expect(pdf.ok, pdf.text).toBe(true)
